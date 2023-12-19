@@ -1,10 +1,14 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import initialBooks from "./mocks/books.json"
+import { Book, LectureBooks, ListBooks } from './components/Book'
+import { Filter } from './components/Filter'
 
 function App() {
   const [books, setBooks] = useState(initialBooks.library)
-  const [lectureBooks, setLectureBooks] = useState([]) 
+  const [lectureBooks, setLectureBooks] = useState([])
+  const [lectureBooksGenre, setLectureBooksGenre] = useState([]) 
+  const [genre, setGenre] = useState("Todas")
 
   const handleClick = (event) => {
     const findBook = books.find(element => element.book.ISBN === event.target.id)
@@ -23,42 +27,34 @@ function App() {
     setLectureBooks(newlectureBooks)
   }
 
+  const handleChange = (event) => {
+    const newBooks = initialBooks.library.filter(element => element.book.genre === event.target.value || event.target.value === "Todas")
+    const newLectureBooks = lectureBooks.filter(element => element.book.genre === event.target.value || event.target.value === "Todas")
+    setGenre(event.target.value)
+    setBooks(newBooks)
+    if(!newLectureBooks.length) {
+      setLectureBooksGenre([])
+    }
+    setLectureBooksGenre(newLectureBooks) 
+  }
+
+  useEffect(() => {
+    setLectureBooksGenre([...lectureBooks])
+  },[lectureBooks])
+
   return (
     <>
       <h1>Bookshop</h1>
       <main>
         <section>
           <h2>Libros Disponibles</h2>
-          <ul>
-            {books && books.map((item) => (
-                <li key={item.book.ISBN}>
-                  <img src={item.book.cover} alt={`Book ${item.book.title}`}/>
-                  <h3>{item.book.title}</h3>
-                  <p>Year: {item.book.year}</p>
-                  <p>Autor: {item.book.author.name}</p>
-                  <p>Pages: {item.book.pages}</p>
-                  <strong>Genre: {item.book.genre} </strong>
-                  <button id={item.book.ISBN} onClick={handleClick}>Agregar</button>
-                </li> 
-              ))}
-          </ul>
+          <Filter handleChange={handleChange} />
+          <ListBooks books={books} onclick={handleClick} />
         </section>
 
         <section>
           <h2>Lista de Lectura</h2>
-          <ul>
-              {lectureBooks && lectureBooks.map((item) => (
-                <li key={item.book.ISBN}>
-                  <img src={item.book.cover} alt={`Book ${item.book.title}`}/>
-                  <h3>{item.book.title}</h3>
-                  <p>Year: {item.book.year}</p>
-                  <p>Autor: {item.book.author.name}</p>
-                  <p>Pages: {item.book.pages}</p>
-                  <strong>Genre: {item.book.genre} </strong>
-                  <button id={item.book.ISBN} onClick={handleDrop}>Eliminar</button>
-                </li> 
-              ))}
-          </ul>
+            <LectureBooks books={lectureBooksGenre} onclick={handleDrop} />
         </section>
       </main>
 
