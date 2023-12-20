@@ -1,63 +1,58 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import initialBooks from "./mocks/books.json"
-import { Book, LectureBooks, ListBooks } from './components/Book'
-import { Filter } from './components/Filter'
+import { ListBooks } from './components/ListBooks'
+import { ListLecture } from './components/ListLecture'
+import { Header } from './components/Header'
+
 
 function App() {
-  const [books, setBooks] = useState(initialBooks.library)
-  const [lectureBooks, setLectureBooks] = useState([])
-  const [lectureBooksGenre, setLectureBooksGenre] = useState([]) 
-  const [genre, setGenre] = useState("Todas")
 
-  const handleClick = (event) => {
-    const findBook = books.find(element => element.book.ISBN === event.target.id)
-    if(!findBook) return;
-    const newBooks = books.filter(element => element.book.ISBN !== event.target.id)
-    setBooks(newBooks)
-    const newLectureBooks = structuredClone(lectureBooks)
-    setLectureBooks([...newLectureBooks,findBook])
+  const [books] = useState(initialBooks.library)
+  const availableBooksStorage = JSON.parse(window.localStorage.getItem("generalBooks")) ?? books
+  const lectureBooksStorage = JSON.parse(window.localStorage.getItem("lectureBooks")) ?? []
+  const [availableBooks, setAvailableBooks] = useState(availableBooksStorage)
+  const [lectureBooks, setLectureBooks] = useState(lectureBooksStorage)
+  const [filters, setFilters] = useState({
+    genre: "all",
+    pages: 0
+  })
+
+  const filterBooks = (books) => {
+    return books.filter(element => {
+      return (
+        (element.book.genre == filters.genre || filters.genre === "all")
+        &&
+        element.book.pages >= filters.pages
+      )
+      
+    })
   }
 
-  const handleDrop = (event) => {
-    const findBook = lectureBooks.find(element => element.book.ISBN === event.target.id)
-    if(!findBook) return;
-    const newlectureBooks = lectureBooks.filter(element => element.book.ISBN !== event.target.id)
-    setBooks(prevState => [...prevState, findBook])
-    setLectureBooks(newlectureBooks)
-  }
-
-  const handleChange = (event) => {
-    const newBooks = initialBooks.library.filter(element => element.book.genre === event.target.value || event.target.value === "Todas")
-    const newLectureBooks = lectureBooks.filter(element => element.book.genre === event.target.value || event.target.value === "Todas")
-    setGenre(event.target.value)
-    setBooks(newBooks)
-    if(!newLectureBooks.length) {
-      setLectureBooksGenre([])
-    }
-    setLectureBooksGenre(newLectureBooks) 
-  }
+  const filteredBooks = filterBooks(availableBooks)
+  const filteredLectureBooks = filterBooks(lectureBooks)
 
   useEffect(() => {
-    setLectureBooksGenre([...lectureBooks])
-  },[lectureBooks])
+    window.localStorage.setItem("generalBooks", JSON.stringify(availableBooks))
+    window.localStorage.setItem("lectureBooks", JSON.stringify(lectureBooks))
+  },[availableBooks,lectureBooks])
 
   return (
     <>
       <h1>Bookshop</h1>
+
       <main>
         <section>
-          <h2>Libros Disponibles</h2>
-          <Filter handleChange={handleChange} />
-          <ListBooks books={books} onclick={handleClick} />
+          <h2>Lista de Libros {filteredBooks.length}</h2>
+          <Header updateFilters={setFilters}/>
+          <ListBooks addToLecture={setLectureBooks} updateBooks={setAvailableBooks} books={filteredBooks} />
         </section>
 
         <section>
-          <h2>Lista de Lectura</h2>
-            <LectureBooks books={lectureBooksGenre} onclick={handleDrop} />
+          <h2>Lista de Lectura {filteredLectureBooks.length}</h2>
+          <ListLecture updateLectureBooks={setLectureBooks} addToListBooks={setAvailableBooks} books={filteredLectureBooks} />
         </section>
       </main>
-
 
     </>
   )
