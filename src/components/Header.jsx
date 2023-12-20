@@ -5,7 +5,6 @@ export function Header({ updateFilters }) {
 
     const handleChangeGenre = (event) => {
         const genre = event.target.value 
-
         updateFilters(prevState => ({
             ...prevState, genre: genre
         }))
@@ -22,7 +21,7 @@ export function Header({ updateFilters }) {
     return (
         <header>
             <div>
-                <h3>Género</h3>
+                <label htmlFor="genre">Género</label>
                 <select onChange={handleChangeGenre} name="genre" id="genre">
                     <option value="all">Todos</option>
                     <option value="Fantasía">Fantasía</option>
@@ -32,10 +31,10 @@ export function Header({ updateFilters }) {
                 </select>
             </div>
             <div>
-                <h3>Páginas</h3>
-                <div style={{ display: "flex", alignItems: "center", gap: "40px"}}>
-                    <input onChange={handleChangePages} type="range" min="0" max="1000" value={pages} />
-                    <p>{pages}</p>
+                <label htmlFor="pages">Páginas</label>
+                <div style={{ display: "flex", alignItems: "center", gap: "20px"}}>
+                    <input id="pages" onChange={handleChangePages} type="range" min="0" max="1000" value={pages} />
+                    <span>{pages}</span>
                 </div>
             </div>
         </header>

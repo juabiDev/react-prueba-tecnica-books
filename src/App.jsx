@@ -7,7 +7,6 @@ import { Header } from './components/Header'
 
 
 function App() {
-
   const [books] = useState(initialBooks.library)
   const availableBooksStorage = JSON.parse(window.localStorage.getItem("generalBooks")) ?? books
   const lectureBooksStorage = JSON.parse(window.localStorage.getItem("lectureBooks")) ?? []
