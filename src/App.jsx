@@ -13,7 +13,7 @@ function App() {
   const lectureBooksStorage = JSON.parse(window.localStorage.getItem("lectureBooks")) ?? []
   const [availableBooks, setAvailableBooks] = useState(availableBooksStorage)
   const [lectureBooks, setLectureBooks] = useState(lectureBooksStorage)
-  const { setFilters, filterBooks} = useFilters();
+  const { filterBooks } = useFilters();
 
   const filteredBooks = filterBooks(availableBooks)
   const filteredLectureBooks = filterBooks(lectureBooks)
@@ -30,7 +30,7 @@ function App() {
       <main>
         <section>
           <h2>Lista de Libros {filteredBooks.length}</h2>
-          <Header updateFilters={setFilters}/>
+          <Header />
           <ListBooks addToLecture={setLectureBooks} updateBooks={setAvailableBooks} books={filteredBooks} />
         </section>
 

@@ -1,12 +1,9 @@
-import { useId, useState } from "react"
 import { Filters } from "./Filters"
 
-export function Header({ updateFilters }) {
-
-
+export function Header() {
     return (
         <header>
-            <Filters updateFilters={updateFilters} />
+            <Filters />
         </header>
     )
 }

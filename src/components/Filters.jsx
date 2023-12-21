@@ -1,13 +1,16 @@
 import { useState, useId } from "react";
+import { useFilters } from "../hooks/useFilters";
 
-export function Filters({ updateFilters }) {
+export function Filters() {
+    const { setFilters } = useFilters();
+
     const [pages, setPages] = useState(0)
     const IdGenre = useId();
     const idPages = useId();
 
     const handleChangeGenre = (event) => {
         const genre = event.target.value 
-        updateFilters(prevState => ({
+        setFilters(prevState => ({
             ...prevState, genre: genre
         }))
     }
@@ -15,7 +18,7 @@ export function Filters({ updateFilters }) {
     const handleChangePages = (event) => {
         const pages = event.target.value;
         setPages(pages)
-        updateFilters(prevState => ({
+        setFilters(prevState => ({
             ...prevState, pages: pages
         }))
     }
