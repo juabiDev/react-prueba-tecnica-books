@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import './App.css'
 import initialBooks from "./mocks/books.json"
 import { ListBooks } from './components/ListBooks'
 import { ListLecture } from './components/ListLecture'
 import { Header } from './components/Header'
+import { useFilters } from './hooks/useFilters'
 
 
 function App() {
@@ -12,21 +13,7 @@ function App() {
   const lectureBooksStorage = JSON.parse(window.localStorage.getItem("lectureBooks")) ?? []
   const [availableBooks, setAvailableBooks] = useState(availableBooksStorage)
   const [lectureBooks, setLectureBooks] = useState(lectureBooksStorage)
-  const [filters, setFilters] = useState({
-    genre: "all",
-    pages: 0
-  })
-
-  const filterBooks = (books) => {
-    return books.filter(element => {
-      return (
-        (element.book.genre == filters.genre || filters.genre === "all")
-        &&
-        element.book.pages >= filters.pages
-      )
-      
-    })
-  }
+  const { setFilters, filterBooks} = useFilters();
 
   const filteredBooks = filterBooks(availableBooks)
   const filteredLectureBooks = filterBooks(lectureBooks)
