@@ -16,5 +16,5 @@ export function useFilters() {
       })
     }
   
-    return { setFilters, filterBooks }
+    return { filters, setFilters, filterBooks }
   }

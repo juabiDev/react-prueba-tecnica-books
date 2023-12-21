@@ -2,9 +2,8 @@ import { useState, useId } from "react";
 import { useFilters } from "../hooks/useFilters";
 
 export function Filters() {
-    const { setFilters } = useFilters();
+    const { filters, setFilters } = useFilters();
 
-    const [pages, setPages] = useState(0)
     const IdGenre = useId();
     const idPages = useId();
 
@@ -17,7 +16,6 @@ export function Filters() {
 
     const handleChangePages = (event) => {
         const pages = event.target.value;
-        setPages(pages)
         setFilters(prevState => ({
             ...prevState, pages: pages
         }))
@@ -38,8 +36,8 @@ export function Filters() {
             <div>
                 <label htmlFor={idPages}>Páginas</label>
                 <div style={{ display: "flex", alignItems: "center", gap: "20px"}}>
-                    <input id={idPages} onChange={handleChangePages} type="range" min="0" max="1000" value={pages} />
-                    <span>{pages}</span>
+                    <input id={idPages} onChange={handleChangePages} type="range" min="0" max="1000" value={filters.pages} />
+                    <span>{filters.pages}</span>
                 </div>
             </div>
         </>
